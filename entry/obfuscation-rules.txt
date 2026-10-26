@@ -1,0 +1,5 @@
+# Obfuscation rules. Kept permissive on purpose: the NAPI bridge exports
+# names that must survive minification.
+-keep-global-name
+-keep-property-name
+-keep-file-name

@@ -1,0 +1,11 @@
+{
+  "modelVersion": "5.0.0",
+  "name": "camelhump",
+  "version": "1.0.1",
+  "description": "CamelHump — on-device LLM runtime for HarmonyOS",
+  "main": "",
+  "author": "camelhump",
+  "license": "Apache-2.0",
+  "dependencies": {},
+  "devDependencies": {}
+}

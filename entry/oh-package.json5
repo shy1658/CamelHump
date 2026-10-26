@@ -1,0 +1,9 @@
+{
+  "name": "entry",
+  "version": "1.0.1",
+  "description": "CamelHump entry module",
+  "main": "",
+  "author": "camelhump",
+  "license": "Apache-2.0",
+  "dependencies": {}
+}

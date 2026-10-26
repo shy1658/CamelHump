@@ -1,0 +1,35 @@
+# DevEco Studio / hvigor
+/node_modules
+/oh_modules
+/.hvigor
+/.idea
+/build
+/entry/build
+/local.properties
+/.cxx
+*.har
+*.hap
+*.hsp
+
+# llama.cpp is pulled in as a submodule; never commit its build output
+/entry/src/main/cpp/third_party/llama.cpp/build*
+/entry/src/main/cpp/third_party/llama.cpp/*.gguf
+
+# Model weights never belong in git
+*.gguf
+*.safetensors
+*.bin
+/models/*.gguf
+
+# self-test build artifacts
+/tools/gguf-selftest/fixtures
+/tools/gguf-selftest/inspector
+
+# CMake 配置缓存(含 llama.cpp 目标文件, 上百 MB)
+**/.cxx
+
+# llama.cpp 源码(181MB)不进仓库, 用 tools/fetch-llama.sh 拉取
+/entry/src/main/cpp/third_party/llama.cpp/
+
+# 签名私钥不入库(cert/p7b 是公开产物, p12 是私钥)
+/keystore/*.p12

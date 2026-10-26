@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#151D30"/>
+      <stop offset="55%" stop-color="#0E1524"/>
+      <stop offset="100%" stop-color="#070A11"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFEAB4"/>
+      <stop offset="38%" stop-color="#F8CB68"/>
+      <stop offset="72%" stop-color="#E7A63C"/>
+      <stop offset="100%" stop-color="#C8842A"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFD9A0"/>
+      <stop offset="60%" stop-color="#F79A4C"/>
+      <stop offset="100%" stop-color="#E2703A"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+
+  <!-- 落日 -->
+  <circle cx="178" cy="214" r="86" fill="url(#sun)" opacity="0.9"/>
+  <circle cx="178" cy="214" r="138" fill="#F79A4C" opacity="0.09"/>
+
+  <!-- 沙丘 -->
+  <path d="M -20 812 Q 190 750 402 798 T 830 768 T 1044 806 L 1044 1044 L -20 1044 Z"
+        fill="#2A2113" opacity="0.85"/>
+  <path d="M -20 886 Q 240 834 470 878 T 1044 858 L 1044 1044 L -20 1044 Z"
+        fill="#1B160D" opacity="0.9"/>
+
+  <!--
+    字母 C: 用圆周 stroke + dasharray 切出右侧开口。
+    r=212 -> 周长 1332.3; 开口 78 度 -> 288.7, 实体段 1043.6。
+    圆头线帽 (stroke-linecap=round) 直接给出圆润端点, 不必再补圆。
+  -->
+  <circle cx="512" cy="512" r="212"
+          fill="none" stroke="url(#gold)" stroke-width="126"
+          stroke-linecap="round"
+          stroke-dasharray="1043.6 288.7"
+          transform="rotate(41 512 512)"/>
+
+  <!-- 弧线高光 -->
+  <path d="M 344 320 A 212 212 0 0 1 452 302" fill="none" stroke="#FFF6DC"
+        stroke-width="22" stroke-linecap="round" opacity="0.38"/>
+  <path d="M 302 640 A 212 212 0 0 0 344 712" fill="none" stroke="#FFF6DC"
+        stroke-width="15" stroke-linecap="round" opacity="0.20"/>
+</svg>

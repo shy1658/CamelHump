@@ -1,0 +1,6 @@
+{
+  "name": "libcamelhump.so",
+  "types": "./index.d.ts",
+  "version": "1.0.1",
+  "description": "CamelHump native inference bridge"
+}
