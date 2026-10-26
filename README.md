@@ -5,11 +5,11 @@
 [![Release](https://img.shields.io/github/v/release/shy1658/CamelHump?style=flat-square)](https://github.com/shy1658/CamelHump/releases)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue?style=flat-square)](LICENSE)
 [![API](https://img.shields.io/badge/HarmonyOS-API%2018-0aa?style=flat-square)](https://developer.huawei.com/consumer/cn/)
-[![爱发电](https://img.shields.io/badge/%E7%88%B1%E5%8F%91%E7%94%B5-%E6%94%AF%E6%8C%81%E5%BC%80%E5%8F%91-946ce6?style=flat-square)](https://afdian.com/a/shy1658)
+[![爱发电](https://img.shields.io/badge/%E7%88%B1%E5%8F%91%E7%94%B5-%E6%94%AF%E6%8C%81%E5%BC%80%E5%8F%91-946ce6?style=flat-square)](https://afdian.com/a/shy1658?utm_source=copylink&utm_medium=link)
 
 Ollama 在桌面上很好用，但它依赖三样手机上没有的东西：systemd 常驻守护进程、无限期后台权限、包管理器。驼峰把这三样换掉，保留真正有价值的部分——**一条路径加载模型、一份清单描述模型、一个稳定接口对接上层**。
 
-作者 [@shy1658](https://github.com/shy1658) · 下载见 [Releases](https://github.com/shy1658/CamelHump/releases) · 支持开发 → [爱发电](https://afdian.com/a/shy1658)
+作者 [@shy1658](https://github.com/shy1658) · 下载见 [Releases](https://github.com/shy1658/CamelHump/releases) · 支持开发 → [爱发电](https://afdian.com/a/shy1658?utm_source=copylink&utm_medium=link)
 
 ```
 ┌──────────────────────────────────────────────┐
@@ -293,7 +293,7 @@ CamelHump/
 | 产物 | 说明 |
 | --- | --- |
 | `CamelHump-1.1.0.hap` | 当前版本，6.9 MB，含 llama.cpp 引擎，`verify-app` 通过 |
-| `CamelHump-v1.1.0.zip` | 源码包（不含 181 MB 的 llama.cpp 本体，`tools/fetch-llama.sh` 按需拉取） |
+| `CamelHump-v1.1.0-src.zip` | 源码包（不含 181 MB 的 llama.cpp 本体，`tools/fetch-llama.sh` 按需拉取） |
 
 **开发者**：克隆源码后按「快速开始」操作。llama.cpp 不进 git，用脚本拉取并打补丁。
 
@@ -301,8 +301,34 @@ CamelHump/
 
 ## 1.1.0 增补
 
-- 设置页「关于」补充作者、GitHub、爱发电入口与软件说明，链接可直接点击打开
-- 首次公开发布到 GitHub
+**关于页**
+
+- 作者 `shy1658`、GitHub 仓库、爱发电入口三项均可直接点击打开
+- 软件简介两段：定位（本地推理 / 离线 / 不出设备）与能力边界（llama.cpp 基础、量化格式、KV 缓存复用、自动降级）
+- 信息行：版本号、**最低支持系统 HarmonyOS API 18**、推理引擎、开源协议
+- 爱发电链接带上 `utm_source` / `utm_medium` 参数，便于统计来源
+
+**发布**
+
+- 首次公开发布到 GitHub，源码 + HAP 同仓库，HAP 作为 Release 资产提供
+- Release 说明覆盖下载方式、系统要求、本版更新、已知限制
+
+---
+
+## 版本历史
+
+| 版本 | 更新 |
+| --- | --- |
+| **1.1.0** | 关于页完善；首次公开发布（GitHub + Release） |
+| 1.0.9 | CPU 侧四项优化：KV Q8_0、Flash Attention、大核亲和性、prompt cache 复用 |
+| 1.0.8 | 修复流式输出不刷新、模型卸载入口 |
+| 1.0.7 | 修复上下文预算溢出导致的 `allows 0 tokens` |
+| 1.0.6 | 系统提示词默认留空，上下文上限提至 128k，token 显示改 k |
+| 1.0.5 | 单轮输出上限提升至 4k |
+| 1.0.4 | 设置页支持删除已导入模型 |
+| 1.0.3 | 增加停止使用并卸载模型 |
+| 1.0.2 | 推理引擎编入分发包，不再提示「未包含推理引擎」 |
+| 1.0.1 | 换用首字母图标，修复构建问题 |
 
 ---
 
