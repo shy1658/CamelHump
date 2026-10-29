@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>驼峰 CamelHump · 隐私政策</title>
+<style>
+  :root {
+    --bg: #0B0E14;
+    --surface: #151A23;
+    --border: #252C39;
+    --text: #E8EAED;
+    --dim: #8B93A1;
+    --faint: #5A6272;
+    --accent: #F2C14E;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 32px 20px 80px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+    line-height: 1.85;
+    font-size: 15px;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  h1 { font-size: 26px; font-weight: 600; margin: 0 0 6px; letter-spacing: .5px; }
+  .sub { color: var(--faint); font-size: 13px; margin-bottom: 28px; }
+  h2 {
+    font-size: 17px; font-weight: 600; margin: 36px 0 12px;
+    padding-left: 10px; border-left: 3px solid var(--accent);
+  }
+  p { margin: 0 0 12px; color: var(--text); }
+  .lead {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 18px 20px; margin-bottom: 8px;
+  }
+  .lead p:last-child { margin-bottom: 0; }
+  ul { margin: 0 0 12px; padding-left: 22px; }
+  li { margin-bottom: 8px; }
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; }
+  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--surface); font-weight: 600; color: var(--dim); white-space: nowrap; }
+  td { color: var(--text); }
+  .tag {
+    display: inline-block; padding: 1px 7px; border-radius: 4px;
+    font-size: 12px; border: 1px solid var(--border); color: var(--dim);
+  }
+  .tag.no { border-color: #2A4A32; color: #4ADE80; }
+  .tag.yes { border-color: #4A3A2A; color: #F2C14E; }
+  code {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 4px; padding: 1px 6px; font-size: 13px;
+    font-family: "SF Mono", Menlo, Consolas, monospace; color: #F2C14E;
+  }
+  .note {
+    background: #1A1610; border: 1px solid #3A3020; border-radius: 8px;
+    padding: 14px 16px; margin: 14px 0; font-size: 14px;
+  }
+  .note p:last-child { margin-bottom: 0; }
+  footer {
+    margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--border);
+    color: var(--faint); font-size: 13px;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  @media (max-width: 560px) {
+    body { padding: 24px 14px 60px; font-size: 14px; }
+    table { font-size: 13px; }
+    th, td { padding: 7px 9px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>驼峰 CamelHump · 隐私政策</h1>
+<div class="sub">
+  更新日期：2026 年 10 月 29 日　|　生效日期：2026 年 10 月 29 日　|　版本：1.1.0
+</div>
+
+<div class="lead">
+<p><strong>一句话总结：驼峰是一个完全离线的本地推理工具。应用不联网、不注册账号、不收集任何个人信息，你的对话内容和模型文件始终留在你自己的设备上。</strong></p>
+<p>本政策依据《中华人民共和国个人信息保护法》《中华人民共和国网络安全法》《中华人民共和国数据安全法》以及《人工智能生成合成内容标识办法》编写，说明「驼峰」（下文称"本应用"）在你使用过程中如何处理信息。</p>
+</div>
+
+<h2>一、我们是谁</h2>
+<p>本应用由个人开发者 <strong>shy1658</strong> 独立开发与维护，开源地址为 <a href="https://github.com/shy1658/CamelHump" style="color:#F2C14E">github.com/shy1658/CamelHump</a>，采用 Apache-2.0 开源协议。</p>
+<p>本应用不是企业产品，不设服务器、不设运营主体、不收集用户数据，因此不存在数据出境、委托处理或向第三方共享的情形。</p>
+
+<h2>二、核心结论：零网络请求</h2>
+<p>本应用的运行时<strong>不包含任何网络通信代码</strong>。应用包内不存在 HTTP 客户端、Socket 调用或任何形式的网络请求，且已<strong>移除全部网络相关权限声明</strong>（包括 <code>ohos.permission.INTERNET</code> 与 <code>ohos.permission.GET_NETWORK_INFO</code>）。</p>
+<p>这意味着在操作系统层面，本应用<strong>无法</strong>连接任何服务器。所有推理计算在你的设备上由 CPU 现场完成。</p>
+
+<h2>三、我们收集哪些信息</h2>
+<table>
+  <thead>
+    <tr><th>信息类型</th><th>是否收集</th><th>说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>设备标识（IMEI / OAID / 广告 ID / UDID）</td><td><span class="tag no">不收集</span></td><td>代码中不存在任何设备标识符读取逻辑</td></tr>
+    <tr><td>个人身份信息（姓名 / 手机号 / 身份证号）</td><td><span class="tag no">不收集</span></td><td>无注册、无登录、无账号体系</td></tr>
+    <tr><td>通讯录 / 短信 / 通话记录</td><td><span class="tag no">不收集</span></td><td>未申请对应权限</td></tr>
+    <tr><td>位置信息</td><td><span class="tag no">不收集</span></td><td>未申请定位权限</td></tr>
+    <tr><td>相机 / 麦克风</td><td><span class="tag no">不收集</span></td><td>未申请对应权限</td></tr>
+    <tr><td>设备存储中的其他文件</td><td><span class="tag no">不主动读取</span></td><td>仅在你主动选择时读取你指定的单个 GGUF 文件</td></tr>
+    <tr><td>崩溃日志 / 行为分析</td><td><span class="tag no">不收集</span></td><td>无任何埋点、统计或崩溃上报 SDK</td></tr>
+    <tr><td>对话内容</td><td><span class="tag no">不收集</span></td><td>仅在设备内存与本地存储中处理，不上传</td></tr>
+  </tbody>
+</table>
+
+<h2>四、本地存储的数据</h2>
+<p>为实现功能所必需，本应用会在<strong>应用私有沙箱目录内</strong>（其他应用无法访问）保存以下内容：</p>
+<table>
+  <thead>
+    <tr><th>数据</th><th>存储位置</th><th>用途</th><th>可否清除</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>你导入的 GGUF 模型文件</td><td>应用沙箱 <code>filesDir</code></td><td>本地推理的权重来源</td><td>可在「模型」页删除</td></tr>
+    <tr><td>对话记录</td><td>应用沙箱（内存 + 本地存储）</td><td>维持多轮上下文</td><td>可在对话页「清空」</td></tr>
+    <tr><td>偏好设置（上下文长度、线程数、温度、系统提示词等）</td><td>应用沙箱 <code>preferences</code></td><td>记住你的参数偏好</td><td>卸载应用即清除</td></tr>
+    <tr><td>模型清单与容量统计</td><td>应用沙箱</td><td>展示已导入模型列表</td><td>可在「模型」页删除</td></tr>
+  </tbody>
+</table>
+<p>上述数据<strong>不会离开设备</strong>。卸载应用会一并清除全部本地数据。</p>
+
+<h2>五、模型权重的来源与责任</h2>
+<p>本应用<strong>不提供模型下载功能</strong>。你使用的每一个 GGUF 模型文件均由你自行从外部获取并导入。</p>
+<div class="note">
+<p><strong>重要提示：</strong>模型权重内容完全由你选择的第三方来源决定，其训练数据、许可协议与输出结果均不属于本应用的控制范围，也不由开发者承担责任。请在导入前确认模型来源合法、许可协议允许你的使用方式（例如遵守模型作者要求署名或开放许可条款）。</p>
+</div>
+
+<h2>六、AI 生成合成内容标识</h2>
+<p>依据《人工智能生成合成内容标识办法》，本应用对 AI 生成的合成内容采取以下标识措施：</p>
+<ul>
+  <li><strong>显式标识</strong>：在每一条 AI 回复气泡的上方，标注「<strong>AI 生成</strong>」标识标签。</li>
+  <li><strong>提示说明</strong>：在对话页空状态区提示「回复内容由本机模型生成，可能存在错误，请勿直接作为事实依据」。</li>
+  <li><strong>不涉及隐式标识</strong>：本应用不提供 AI 生成内容的文件导出或下载功能，因此不产生需要在文件元数据中写入的隐式标识信息。</li>
+</ul>
+<p>你也可以在「设置 → 关于」中查看本政策的摘要说明与完整内容入口。</p>
+
+<h2>七、权限说明</h2>
+<p>本应用当前<strong>不申请任何权限</strong>，包括网络权限。文件访问通过系统文件选择器由你主动触发，仅授予单次访问你所选文件的权限，不涉及相册、存储等广泛授权。</p>
+
+<h2>八、第三方组件与开源许可</h2>
+<p>本应用内嵌了以下开源组件，其许可条款适用于对应组件：</p>
+<ul>
+  <li><strong>llama.cpp</strong>（MIT 许可证）—— 本地推理引擎</li>
+  <li><strong>ggml</strong>（MIT 许可证）—— 张量运算库</li>
+</ul>
+<p>完整的依赖清单与许可信息见仓库根目录的 <code>LICENSE</code> 与 <code>NOTICE</code> 文件。</p>
+
+<h2>九、未成年人保护</h2>
+<p>本应用是面向具备完全民事行为能力用户的工具软件，不面向未成年人提供服务，也不会主动获取任何可用于识别未成年人身份的信息。若你是未成年人的监护人，可以卸载本应用以停止使用。</p>
+
+<h2>十、政策的变更</h2>
+<p>若本政策的处理方式发生实质性变更，本应用会通过更新应用版本的方式发布新政策，并在本页面更新「更新日期」。重大变更会在应用内以显著方式提示。</p>
+
+<h2>十一、联系我们</h2>
+<p>如对本政策有任何疑问、意见或发现隐私相关问题，欢迎通过以下方式联系：</p>
+<ul>
+  <li>GitHub Issues：<a href="https://github.com/shy1658/CamelHump/issues" style="color:#F2C14E">github.com/shy1658/CamelHump/issues</a></li>
+  <li>GitHub 仓库：<a href="https://github.com/shy1658/CamelHump" style="color:#F2C14E">github.com/shy1658/CamelHump</a></li>
+  <li>赞助支持：<a href="https://afdian.com/a/shy1658?utm_source=copylink&utm_medium=link" style="color:#F2C14E">afdian.com/a/shy1658</a></li>
+</ul>
+
+<footer>
+  <p>本政策依据现行法律法规编写，不构成法律意见。如本政策与法律法规冲突，以法律法规为准。</p>
+  <p style="margin-top:14px">驼峰 CamelHump v1.1.0 · <a href="https://github.com/shy1658/CamelHump">GitHub</a> · Apache-2.0</p>
+</footer>
+
+</div>
+</body>
+</html>

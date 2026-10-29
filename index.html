@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>驼峰 CamelHump</title>
+<style>
+  :root { --bg:#0B0E14; --surface:#151A23; --border:#252C39; --text:#E8EAED; --dim:#8B93A1; --faint:#5A6272; --accent:#F2C14E; }
+  * { box-sizing:border-box; }
+  body { margin:0; padding:56px 20px 80px; background:var(--bg); color:var(--text);
+    font-family:-apple-system,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif; line-height:1.8; }
+  .wrap { max-width:680px; margin:0 auto; }
+  h1 { font-size:28px; font-weight:600; margin:0 0 4px; letter-spacing:.5px; }
+  .tagline { color:var(--dim); font-size:15px; margin:0 0 28px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px 22px; margin-bottom:16px; }
+  .card h2 { font-size:15px; font-weight:600; margin:0 0 10px; color:var(--accent); }
+  .card p { margin:0 0 8px; font-size:14px; color:var(--text); }
+  .card p:last-child { margin-bottom:0; }
+  .card a { color:var(--accent); text-decoration:none; }
+  .card a:hover { text-decoration:underline; }
+  ul { margin:0; padding-left:20px; font-size:14px; }
+  li { margin-bottom:6px; }
+  .badge { display:inline-block; padding:2px 9px; border:1px solid var(--border); border-radius:20px; font-size:12px; color:var(--dim); margin:0 6px 6px 0; }
+  footer { margin-top:36px; color:var(--faint); font-size:13px; text-align:center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>驼峰 CamelHump</h1>
+  <p class="tagline">手机鸿蒙上的本地大模型运行时 · 推理全部在设备上完成</p>
+
+  <div class="card">
+    <h2>这是什么</h2>
+    <p>导入你自己下载的 GGUF 模型，在手机上离线对话。模型权重不离开设备，对话内容不上传。</p>
+    <div>
+      <span class="badge">HarmonyOS API 18+</span>
+      <span class="badge">llama.cpp 引擎</span>
+      <span class="badge">零网络请求</span>
+      <span class="badge">Apache-2.0</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>下载</h2>
+    <ul>
+      <li><a href="https://github.com/shy1658/CamelHump/releases">Releases</a> — 安装包 <code>.hap</code> 与源码包</li>
+      <li><a href="https://github.com/shy1658/CamelHump">GitHub 仓库</a> — 源码、文档与问题反馈</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>隐私</h2>
+    <p>本应用不联网、不注册账号、不收集任何个人信息。</p>
+    <p><a href="./privacy.html">查看完整隐私政策 →</a></p>
+  </div>
+
+  <div class="card">
+    <h2>支持开发</h2>
+    <p><a href="https://afdian.com/a/shy1658?utm_source=copylink&utm_medium=link">爱发电</a> — 如果这个应用帮到了你，欢迎支持后续开发。</p>
+  </div>
+
+  <footer>驼峰 CamelHump v1.1.0 · Apache-2.0 · 开发者 shy1658</footer>
+</div>
+</body>
+</html>
