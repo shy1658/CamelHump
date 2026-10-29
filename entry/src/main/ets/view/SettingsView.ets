@@ -9,6 +9,8 @@ import { Log, describeError } from '../core/Logger';
 
 const PROJECT_URL: string = 'https://github.com/shy1658/CamelHump';
 const SPONSOR_URL: string = 'https://afdian.com/a/shy1658?utm_source=copylink&utm_medium=link';
+const PRIVACY_URL: string = 'https://shy1658.github.io/CamelHump/privacy.html';
+const LICENSE_URL: string = 'https://github.com/shy1658/CamelHump/blob/main/LICENSE';
 
 @Component
 export struct SettingsView {
@@ -615,6 +617,8 @@ export struct SettingsView {
             this.linkRow('作者', 'shy1658', PROJECT_URL)
             this.linkRow('GitHub', 'shy1658/CamelHump', PROJECT_URL)
             this.linkRow('爱发电', 'afdian.com/a/shy1658', SPONSOR_URL)
+            this.linkRow('隐私政策', '查看完整隐私政策', PRIVACY_URL)
+            this.linkRow('开源协议', 'Apache-2.0', LICENSE_URL)
 
             Divider()
               .color(Theme.border)
@@ -624,7 +628,15 @@ export struct SettingsView {
             this.infoRow('版本', '1.1.0 (1001000)')
             this.infoRow('最低支持系统', 'HarmonyOS API 18')
             this.infoRow('推理引擎', 'llama.cpp · CPU')
-            this.infoRow('开源协议', 'Apache-2.0')
+            this.infoRow('数据流向', '全部本地处理 · 无网络请求')
+
+            Text('AI 生成内容说明：本应用的回复由用户自行导入的模型在本机推理产生，'
+              + '已按《人工智能生成合成内容标识办法》在界面上做显式标识。'
+              + '模型输出可能存在错误，请自行核实后使用。')
+              .fontSize(11)
+              .fontColor(Theme.textFaint)
+              .lineHeight(16)
+              .margin({ top: 10 })
 
             Text('如果这个应用帮到了你，欢迎在爱发电支持后续开发。')
               .fontSize(11)

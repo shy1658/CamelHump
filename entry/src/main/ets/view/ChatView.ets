@@ -254,6 +254,13 @@ export struct ChatView {
         .fontColor(Theme.textDim)
         .textAlign(TextAlign.Center)
         .padding({ left: 40, right: 40 })
+
+      Text('回复内容由本机模型生成，可能存在错误，请勿直接作为事实依据')
+        .fontSize(11)
+        .fontColor(Theme.textFaint)
+        .textAlign(TextAlign.Center)
+        .padding({ left: 40, right: 40 })
+        .margin({ top: 12 })
     }
     .width('100%')
     .height('100%')
@@ -280,6 +287,20 @@ export struct ChatView {
       }
 
       Column() {
+        // 《人工智能生成合成内容标识办法》要求对 AI 生成内容做显式标识。
+        // 审核会索取这张截图，所以标识必须真的出现在界面上，而不是只写在文档里。
+        if (msg.role === 'assistant' && !msg.failed) {
+          Row() {
+            Text('AI 生成')
+              .fontSize(9)
+              .fontColor(Theme.textFaint)
+              .border({ width: 1, color: Theme.border })
+              .borderRadius(3)
+              .padding({ left: 4, right: 4, top: 1, bottom: 1 })
+          }
+          .margin({ bottom: 5 })
+        }
+
         Text(this.bubbleText(msg))
           .fontSize(15)
           .lineHeight(23)

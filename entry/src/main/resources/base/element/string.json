@@ -11,14 +11,6 @@
     {
       "name": "EntryAbility_label",
       "value": "驼峰"
-    },
-    {
-      "name": "perm_internet_reason",
-      "value": "用于从模型源下载 GGUF 模型文件"
-    },
-    {
-      "name": "perm_netinfo_reason",
-      "value": "用于判断网络状态并决定是否续传下载"
     }
   ]
 }
