@@ -625,7 +625,7 @@ export struct SettingsView {
               .strokeWidth(1)
               .margin({ top: 10, bottom: 4 })
 
-            this.infoRow('版本', '1.1.0 (1001000)')
+            this.infoRow('版本', '1.1.1 (1001001)')
             this.infoRow('最低支持系统', 'HarmonyOS API 18')
             this.infoRow('推理引擎', 'llama.cpp · CPU')
             this.infoRow('数据流向', '全部本地处理 · 无网络请求')

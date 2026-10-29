@@ -83,9 +83,15 @@ for name in ('app-cert.cer', 'profile-cert.cer'):
 PY
 
 # ---------- 7. Provision Profile JSON ----------
-python3 - "$KS_DIR" <<'PY'
+# 版本号必须与 AppScope/app.json5 里的 versionName / versionCode 一致，
+# 否则 hap-sign-tool 或 AGC 会报「Profile 与包不匹配」。
+VERSION_NAME="${VERSION_NAME:-1.1.1}"
+VERSION_CODE="${VERSION_CODE:-1001001}"
+python3 - "$KS_DIR" "$VERSION_NAME" "$VERSION_CODE" <<'PY'
 import json, re, sys, time, uuid
 d = sys.argv[1]
+version_name = sys.argv[2]
+version_code = int(sys.argv[3])
 # development-certificate 保持 PEM 原文; JSON 会把换行转义成 \n, 不含裸斜杠。
 # app-cert.cer 已重排为 根->中间->叶子, 叶子在最后一张。
 _blocks = re.findall(r'-----BEGIN CERTIFICATE-----.*?-----END CERTIFICATE-----',
@@ -94,8 +100,8 @@ _blocks = re.findall(r'-----BEGIN CERTIFICATE-----.*?-----END CERTIFICATE-----',
 # 缺少结尾换行会导致 "Illegal base64 character 20"。
 leaf = _blocks[-1] + '\n'
 prof = {
-    "version-name": "1.1.0",
-    "version-code": 1001000,
+    "version-name": version_name,
+    "version-code": version_code,
     "uuid": str(uuid.uuid4()),
     "validity": {"not-before": int(time.time()) - 3600,
                  "not-after": int(time.time()) + 365 * 24 * 3600},
