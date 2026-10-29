@@ -39,3 +39,16 @@
 /docs/copyright/*.pdf
 /docs/copyright/*.html
 /docs/copyright/源代码-纯文本备份.txt
+
+# 发布证书的私钥与 CSR（申请发布证书用的本地材料，不入库）
+# .cer 与 .p7b 是华为签发的公开产物，可入库；.p12 是私钥，绝不能入库
+/keystore/release.p12
+/keystore/release.csr
+
+# hvigor 的签名加密材料（命令行工具链自带的公开材料，可入库，
+# 便于纯命令行环境构建；不含任何私钥信息）
+# keystore/material/  ← 不忽略
+
+# 上架用的 .app 包（含发布签名，2.6MB）
+# 由 tools/build-app.sh 生成，不入库
+/CamelHump-release.app

@@ -173,35 +173,146 @@ CamelHump 与市面上绝大多数待上架应用有一个根本区别：
 
 ### 3.2 获取正式发布证书（Release Profile）
 
-自签调试证书**不能上架**。流程：
+自签调试证书**不能上架**。`keystore/camelhump.p12` 是自建根 CA 的调试证书链，
+只用于侧载体验，应用市场不认。上架必须用华为签发的发布证书。
 
-1. DevEco Studio → `Build > Generate Key and CSR`
-   - Key Store File：新建 `.p12`（密码 ≥8 位，大小写+数字+特殊符号至少两类组合）
-   - Alias、Password、Validity（建议 25 年以上）、Certificate 信息
-   - 输出 `.p12` 与 `.csr`
-2. AGC → 项目 →「证书、APP ID 和 Profile」→ 申请发布证书
-   - 上传 `.csr`
-   - 选择应用 → 配置 Profile → 勾选发布证书
-   - 下载 `.cer` 与 `.p7b`
-3. `build-profile.json5` 配置签名：
+**第一步：生成密钥与 CSR**（已生成，可直接用）
 
-```json5
-{
-  "name": "release",
-  "type": "OpenHarmony",
-  "material": {
-    "storeFile": "./keystore/release.p12",
-    "storePassword": "***",
-    "keyAlias": "***",
-    "keyPassword": "***",
-    "signAlg": "SHA256withECDSA",
-    "profile": "./keystore/release.p7b",
-    "certpath": "./keystore/release-cert.cer"
-  }
-}
+```bash
+./tools/gen-release-csr.sh
 ```
 
+产出两个文件：
+
+| 文件 | 用途 | 是否入库 |
+| --- | --- | --- |
+| `keystore/release.p12` | **私钥**。丢失后无法恢复，只能重新申请证书 | ❌ 已加入 `.gitignore` |
+| `keystore/release.csr` | 证书请求文件，上传到 AGC | ❌ 已加入 `.gitignore` |
+
+参数（脚本已固化）：
+
+```
+别名        camelhump-release-v1
+密钥库密码  MjkwZjBlZTUxMjY1Y2FhMjgzNTA3N2QyNjNk   (36 字符 base64)
+密钥密码    ZDg4Y2I0ZTM5ZDdmOTJkZDA4NmNhYmQ5YzIx   (36 字符 base64)
+算法        ECC / NIST-P-256，签名 SHA256withECDSA
+有效期      9125 天（25 年）
+主体        C=CN, O=CamelHump, OU=Dev, CN=CamelHump
+```
+
+密码规则要同时满足两侧校验：
+- **DevEco Studio**：大小写字母/数字/特殊符号至少两类组合，长度 ≥ 8
+- **hap-sign-tool**：长度 ≥ 32、为偶数、必须是合法 base64（长度为 4 的倍数）
+
+> 为什么不用 DevEco 的 `Build > Generate Key and CSR`：
+> 那个界面也能生成，但密码规则只需满足 DevEco 一侧，用 `hap-sign-tool` 手工签名时会
+> 因密码不满足 base64 规则而失败。这里的密码两侧都能用。
+
+**第二步：上传到 AGC 申请**
+
+1. AGC → 你的应用 →「证书、APP ID 和 Profile」
+2. 点「添加发布证书」→ 上传 `keystore/release.csr`
+3. 配置 Profile：
+   - 选择刚申请的发布证书
+   - 勾选应用 `com.camelhump.app`
+   - Profile 类型选 **Release**（不是 Debug）
+4. 下载得到 `.cer` 与 `.p7b`
+5. 放到 `keystore/` 下并改名：
+   - `release-cert.cer` → `release.cer`
+   - `release-profile.p7b` → `release.p7b`
+
+**第三步：配置 release 签名**
+
+`build-profile.json5` 已配好 `release` 签名块，`products` 里的
+`"signingConfig"` 也已指向 `"release"`。密码字段填的是**加密后的 hex 密文**
+（见 3.3 的说明）。
+
+若修改了密钥库密码，重新生成密文：
+
+```bash
+./tools/build-app.sh --refresh
+```
+
+> 在 DevEco Studio 里构建时，把 `build-profile.json5` 的密码换成明文，
+> 由 IDE 自己加密 —— DevEco 会自动维护自己的 material 目录。
+> 命令行与 IDE 的密码字段不能混用。
+
 ### 3.3 命令行构建 .app
+
+一键脚本（构建 + 签名 + 验签）：
+
+```bash
+./tools/build-app.sh
+```
+
+产物：`CamelHump-release.app`（2.6 MB）
+
+脚本做四件事：
+1. 检查 `release.cer` / `release.p7b` / `release.p12` 是否齐备
+2. 首次运行自动从命令行工具链复制 hvigor 的签名加密材料到 `keystore/material`
+3. `hvigorw assembleApp --mode project` 构建并签名
+4. `hap-sign-tool verify-app` 验签
+
+#### 三个必须知道的坑
+
+**① assembleApp 要用 `--mode project`**
+
+```bash
+hvigorw assembleApp --mode project -p product=default -p buildMode=release
+```
+
+用 `--mode module` 会报 `Task [ 'assembleApp' ] was not found in the project`
+—— `assembleApp` 是工程级任务，`--mode module` 让它去模块里找。
+
+**② hvigor 的签名密码必须是加密过的 hex 密文**
+
+`build-profile.json5` 里的 `storePassword` / `keyPassword`，
+hvigor 会用 `keystore/material` 下的加密材料解密。**明文一定失败**：
+
+```
+ENOENT: no such file or directory, stat 'keystore/material'
+```
+
+material 目录从命令行工具链复制即可（公开材料，不含私钥）：
+
+```bash
+cp -r $DEVECO_SDK_HOME/../../hvigor/hvigor-ohos-plugin/res/material keystore/material
+```
+
+密码用配套脚本加密（格式与 hvigor 的 `decipher-util.js` 完全对称）：
+
+```bash
+node tools/encrypt-signing-pwd.js "你的明文密码"
+```
+
+> **格式说明**（用 hvigor 自带样本 `zb/de` 反推验证）：
+> ```
+> [4 字节大端头 r][12 字节 IV][密文][16 字节 authTag]
+> r = 密文长度 + 16
+> ```
+> 三个容易踩的点：
+> - `r` 写 `payload.length`（含 IV）会让 hvigor 把 IV 长度算成 16 而非 12，
+>   报 `Unsupported state or unable to authenticate data`
+> - `authTag` 长度固定 16，不能用 `c.getAuthTag().length` 算
+>   （`final()` 之后 tag 已被消费，长度会变 0）
+> - `key` 是 `Int8Array`，必须原样传给 `createCipheriv`。
+>   `Buffer.from(Int8Array)` 会按有符号转换，高位字节（>127）变负数，结果全错
+
+**③ .app 内嵌的 HAP 是 unsigned 的，这是正常的**
+
+`PackageApp` 收集的是 `getModuleTargetOutputFileName(name, false)`
+（`false` → unsigned 文件名），签名由 `SignApp` 打在 **`.app` 这一层**。
+所以验签要对 `.app` 做：
+
+```bash
+java -jar $TOOLCHAIN/lib/hap-sign-tool.jar verify-app \
+  -inFile CamelHump-release.app -outCertChain chain.cer -outProfile profile.p7b
+# -> Digest verify result: true / verify-app success
+```
+
+对内嵌 HAP 单独验签会失败，这是预期行为，不是构建问题。
+
+手工执行等价命令：
 
 ```bash
 export PATH=/root/ohos-clt/command-line-tools/bin:$PATH
@@ -211,12 +322,47 @@ export PATH=$DEVECO_NODE_HOME/bin:$DEVECO_SDK_HOME/default/openharmony/toolchain
 
 hvigorw assembleApp --mode module -p product=default \
   -p module=entry@default -p buildMode=release --no-daemon
+
+java -jar $TOOLCHAIN/lib/hap-sign-tool.jar sign-app -mode localSign \
+  -keyAlias camelhump-release-v1 -keyPwd "$KEY_PWD" \
+  -appCertFile keystore/release.cer -profileFile keystore/release.p7b \
+  -inFile <未签名.app> -signAlg SHA256withECDSA \
+  -keystoreFile keystore/release.p12 -keystorePwd "$STORE_PWD" \
+  -outFile CamelHump-release.app -compatibleVersion 18 -signCode "1"
 ```
 
-产物：`build/outputs/default/CamelHump-1.1.1.app`
+验签：
+
+```bash
+java -jar $TOOLCHAIN/lib/hap-sign-tool.jar verify-app \
+  -inFile CamelHump-release.app -outCertChain chain.cer -outProfile profile.p7b
+# -> Digest verify result: true / verify-app success
+```
 
 > **注意**：DevEco Studio 的 `Build APP(s)` 会把工程内所有 HAP 模块打进 APP。
 > 本工程只有一个 `entry` 模块，无此问题。
+
+---
+
+## 三点提醒
+
+**① AGC 上传的 `.app` 里包含所有 HAP 模块**
+
+上传前确认 `entry/build/default/outputs/default/` 下没有多余模块。
+
+**② 包名必须完全一致**
+
+`.app` 里的 `bundleName`（`com.camelhump.app`）、Profile 里绑定的包名、
+AGC 创建应用时填的包名，三者必须**完全一致**，
+否则上传时报「使用的 Profile 和证书不匹配」。
+
+**③ 上架后搜索不到应用的常见原因**
+
+官方 FAQ 列了三种情况：
+- 设备系统版本必须是 **HarmonyOS 5 及以上**（本应用要求 API 18+，符合）
+- 设备 API 版本要在应用的适配范围内
+- 检查发布设备类型与包内 `deviceTypes` 是否匹配 ——
+  若只发布到手机，则在平板与 PC 上搜不到
 
 ---
 
@@ -436,8 +582,10 @@ cd keystore && VERSION_NAME=1.2.0 VERSION_CODE=1001002 ./gen-signing.sh
 
 - [ ] 注册华为开发者账号并实名认证（个人：身份证）
 - [ ] 若创建应用被拦，邮件申请加入「应用创建受邀名单」（agconnect@huawei.com，3–5 工作日）
-- [ ] DevEco Studio 生成 release `.p12` + `.csr` → AGC 申请发布证书与 Profile
-- [ ] 配置 release 签名，`assembleApp` 构建 `.app`（**不是 `.hap`**）
+- [x] 发布密钥与 CSR 已生成（`tools/gen-release-csr.sh` → `keystore/release.p12` + `release.csr`）
+- [ ] 上传 `keystore/release.csr` 到 AGC → 申请发布证书 → 配置 Release Profile（勾选 `com.camelhump.app`）
+- [ ] 下载 `.cer` / `.p7b` 改名为 `release.cer` / `release.p7b` 放入 `keystore/`
+- [ ] `./tools/build-app.sh` 构建并签名 `.app`（**不是 `.hap`**），验签通过
 - [ ] **断网自检**：飞行模式下确认模型导入、加载、对话全部正常（勾选「单机APP」的前提）
 - [ ] 真机截图替换 `docs/store-assets/` 里的预览渲染图（可选但推荐）
 - [ ] 真机单独截一张「AI 生成」显式标识界面图

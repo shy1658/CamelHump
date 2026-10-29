@@ -2,23 +2,43 @@
   "app": {
     "signingConfigs": [
       {
+        // 本地调试签名（自签证书链，仅用于侧载体验，应用市场不认）
+        // 密钥库由 tools/gen-signing.sh 生成，密码是 36 字符 base64 串
         "name": "default",
         "type": "OpenHarmony",
         "material": {
           "storeFile": "./keystore/camelhump.p12",
-          "storePassword": "CamelHump2026DebugSigningStorePwd73X",
+          "storePassword": "00000034d15f7a46c519199202558723ec162ead95f450949663189d1d1110afdb1f332e0058bc068f75b48fa397e6a62150d2c2c4427b0fefab2f958cf2a428687179c2",
           "keyAlias": "camelhump-app-v1",
-          "keyPassword": "CamelHump2026DebugSigningKeyStorePwd3Y",
+          "keyPassword": "000000347884334358ab59bdced963239e79047c379d3a834e288ae39a1145d79826a54d30e256261f8d7fa6a2b09eaddf01407a7758bfa76682aeb210534db7cefbd0c0",
           "signAlg": "SHA256withECDSA",
           "profile": "./keystore/camelhump.p7b",
           "certpath": "./keystore/app-cert.cer"
+        }
+      },
+      {
+        // 发布签名：华为签发的证书与 Profile，用于上架 AppGallery Connect。
+        // 由 tools/gen-release-csr.sh 生成密钥，AGC 签发 .cer 与 .p7b。
+        "name": "release",
+        "type": "OpenHarmony",
+        "material": {
+          "storeFile": "./keystore/release.p12",
+          // hvigor 只认 DevEco 加密过的 hex 密文，明文过不了。
+          // 用 tools/encrypt-signing-pwd.js 生成（依赖 keystore/material 下的加密材料）。
+          "storePassword": "00000034d15f7a46c519199202558723ec162ead95f450949663189d1d1110afdb1f332e0058bc068f75b48fa397e6a62150d2c2c4427b0fefab2f958cf2a428687179c2",
+          "keyAlias": "camelhump-release-v1",
+          "keyPassword": "000000347884334358ab59bdced963239e79047c379d3a834e288ae39a1145d79826a54d30e256261f8d7fa6a2b09eaddf01407a7758bfa76682aeb210534db7cefbd0c0",
+          "signAlg": "SHA256withECDSA",
+          "profile": "./keystore/release.p7b",
+          "certpath": "./keystore/release.cer"
         }
       }
     ],
     "products": [
       {
         "name": "default",
-        "signingConfig": "default",
+        // 上架用 release 签名；本地调试可临时改回 "default"
+        "signingConfig": "release",
         "compatibleSdkVersion": "5.1.0(18)",
         "runtimeOS": "HarmonyOS",
         "buildOption": {
