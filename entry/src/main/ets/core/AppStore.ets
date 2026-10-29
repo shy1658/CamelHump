@@ -1,6 +1,6 @@
 import { preferences } from '@kit.ArkData';
 import { AppSettings, ChatMsg, CuratedModel, EngineInfo, ModelEntry } from './Types';
-import { CURATED_MODELS, DEFAULT_SETTINGS, LEGACY_DEFAULT_SYSTEM_PROMPT, SETTINGS_KEY, normalizeSettings } from './Config';
+import { CURATED_MODELS, DEFAULT_SETTINGS, LEGACY_DEFAULT_SYSTEM_PROMPT, PRIVACY_CONSENT_KEY, SETTINGS_KEY, normalizeSettings } from './Config';
 import { ContextHolder } from './ContextHolder';
 import { InferenceEngine } from './InferenceEngine';
 import { ImportResult, ModelRepository } from './ModelRepository';
@@ -32,6 +32,16 @@ export class AppStore {
   pinnedCores: number = 0;
   /** Bumped whenever `models` is replaced, so views can subscribe. */
   modelsVersion: number = 0;
+  /**
+   * Whether the user has accepted the privacy policy.
+   *
+   * Huawei's review flow requires a first-run consent dialog, and the reviewer
+   * checks that nothing touches personal data before the user agrees. This app
+   * has no accounts, no network calls and no permissions, so "collecting
+   * nothing" is the default -- but the agreement itself still has to be
+   * recorded, otherwise the app looks like it skipped the consent step.
+   */
+  privacyAccepted: boolean = false;
 
   readonly engine: InferenceEngine = new InferenceEngine();
   readonly repo: ModelRepository = new ModelRepository();
@@ -58,10 +68,63 @@ export class AppStore {
 
   async boot(): Promise<void> {
     this.enginePresent = this.engine.enginePresent();
+    await this.loadPrivacyConsent();
+
+    // 用户同意隐私政策之前，不读取任何本地数据。
+    //
+    // 审核要求「用户同意前应用不应该有任何调用权限 API 的行为」，
+    // 审核员会在未点击同意的情况下实测。虽然本应用不采集任何个人信息，
+    // 但提前读取设置与模型清单仍属于「用户同意前访问本地数据」，
+    // 保守起见先只读取同意状态本身。
+    if (!this.privacyAccepted) {
+      this.syncStorage();
+      Log.info('boot: awaiting privacy consent, no local data read');
+      return;
+    }
+
     await this.loadSettings();
     await this.refreshModels();
     this.syncStorage();
-    Log.info(`boot: ${this.models.length} model(s), engine=${this.enginePresent}`);
+    Log.info(`boot: ${this.models.length} model(s), engine=${this.enginePresent}, `
+      + `privacyAccepted=${this.privacyAccepted}`);
+  }
+
+  /**
+   * Reads settings and the model list. Called once the user has accepted the
+   * privacy policy -- until then the app touches nothing but the consent flag.
+   */
+  async loadAfterConsent(): Promise<void> {
+    await this.loadSettings();
+    await this.refreshModels();
+    this.syncStorage();
+  }
+
+  // ----------------------------------------------------------- privacy consent
+  /**
+   * Reads the stored consent flag. A missing record means "not yet agreed",
+   * which is what drives the first-run dialog.
+   */
+  async loadPrivacyConsent(): Promise<void> {
+    try {
+      const store = await preferences.getPreferences(ContextHolder.get(), 'camelhump');
+      const raw = await store.get(PRIVACY_CONSENT_KEY, '') as string;
+      this.privacyAccepted = raw === 'accepted';
+    } catch (e) {
+      Log.warn(`load privacy consent failed: ${describeError(e)}`);
+      this.privacyAccepted = false;
+    }
+  }
+
+  /** Records the user's acceptance. Called only from an explicit user action. */
+  async acceptPrivacyPolicy(): Promise<void> {
+    this.privacyAccepted = true;
+    try {
+      const store = await preferences.getPreferences(ContextHolder.get(), 'camelhump');
+      await store.put(PRIVACY_CONSENT_KEY, 'accepted');
+      await store.flush();
+    } catch (e) {
+      Log.warn(`save privacy consent failed: ${describeError(e)}`);
+    }
   }
 
   // ---------------------------------------------------------------- settings

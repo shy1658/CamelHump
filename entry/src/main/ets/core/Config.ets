@@ -39,6 +39,18 @@ export const MODELS_DIR = 'models';
 export const MODEL_FILE = 'model.gguf';
 export const META_FILE = 'meta.json';
 
+/**
+ * 隐私政策同意状态的存储键。
+ *
+ * 华为应用市场要求：应用首次运行时须以弹窗向用户申请授权展示隐私政策，
+ * 用户同意前不得有任何收集个人信息或调用权限 API 的行为。
+ * 审核会实测这一步 —— 未同意时直接抓包/看日志，出现数据获取即驳回。
+ */
+export const PRIVACY_CONSENT_KEY = 'camelhump.privacy.consent.v1';
+
+/** 隐私政策线上地址，需可公开访问。 */
+export const PRIVACY_URL = 'https://shy1658.github.io/CamelHump/privacy.html';
+
 export const MIN_CONTEXT = 512;
 /**
  * Upper bound offered in the UI, not a promise. What a device can actually

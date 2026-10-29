@@ -1,7 +1,9 @@
 import { ChatView } from '../view/ChatView';
 import { ModelsView } from '../view/ModelsView';
 import { SettingsView } from '../view/SettingsView';
+import { PrivacyConsent } from '../view/PrivacyConsent';
 import { AppStore } from '../core/AppStore';
+import { ContextHolder } from '../core/ContextHolder';
 import { Theme } from '../core/Theme';
 import { describeError } from '../core/Logger';
 
@@ -11,6 +13,8 @@ struct Index {
   @State currentTab: number = 0;
   @State ready: boolean = false;
   @State bootError: string = '';
+  /** 是否需要展示隐私政策授权弹窗。 */
+  @State needPrivacyConsent: boolean = false;
 
   private controller: TabsController = new TabsController();
 
@@ -18,11 +22,32 @@ struct Index {
     AppStore.get().boot()
       .then(() => {
         this.ready = true;
+        // 首次运行且未同意隐私政策时，弹出授权层。
+        // 此时应用尚未加载任何模型、没有任何数据被读取。
+        this.needPrivacyConsent = !AppStore.get().privacyAccepted;
       })
       .catch((e: Object) => {
         this.bootError = describeError(e);
         this.ready = true;
       });
+  }
+
+  private async onAcceptPrivacy(): Promise<void> {
+    await AppStore.get().acceptPrivacyPolicy();
+    this.needPrivacyConsent = false;
+    // 同意之后才读取本地数据（设置与模型清单）
+    await AppStore.get().loadAfterConsent();
+  }
+
+  private onDeclinePrivacy(): void {
+    // 用户不同意：关闭应用，不进入主界面。
+    // 这是审核要求的一部分 —— 必须提供「不同意」的明确出口。
+    try {
+      ContextHolder.get().terminateSelf();
+    } catch (e) {
+      // 关不掉也不能强行留在界面上，退回到空白态
+      this.needPrivacyConsent = false;
+    }
   }
 
   @Builder
@@ -112,6 +137,18 @@ struct Index {
         })
         .width('100%')
         .height('100%')
+      }
+
+      // 隐私政策授权层：盖在主界面之上，未同意时不可穿透
+      if (this.needPrivacyConsent) {
+        PrivacyConsent({
+          onAccept: () => {
+            this.onAcceptPrivacy();
+          },
+          onDecline: () => {
+            this.onDeclinePrivacy();
+          }
+        })
       }
     }
     .width('100%')
