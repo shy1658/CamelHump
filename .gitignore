@@ -33,3 +33,9 @@
 
 # 签名私钥不入库(cert/p7b 是公开产物, p12 是私钥)
 /keystore/*.p12
+
+# 软著材料：PDF 由脚本生成，不入库（体积大且可复现）
+# 需要时执行 tools/gen-copyright-source.py 与 tools/gen-copyright-manual.py 重建
+/docs/copyright/*.pdf
+/docs/copyright/*.html
+/docs/copyright/源代码-纯文本备份.txt

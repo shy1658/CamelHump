@@ -267,10 +267,14 @@ CamelHump/
 │   ├── LLAMA-INTEGRATION.md           引擎接入、上游 API 变更、验证方法
 │   ├── GPU-VS-CPU.md                  GPU 与 CPU 推理的定量评估（暂不实现）
 │   ├── APP-STORE-GUIDE.md            鸿蒙应用市场上架指引（资质、打包、审核）
+│   ├── copyright/                     软著登记材料（源代码 PDF、用户手册 PDF）
 │   ├── PERF-NOTES.md                  性能实测方法
 │   └── MODEL-GUIDE.md                 模型选择
 ├── tools/
 │   ├── fetch-llama.sh                 拉取 llama.cpp 并打 OHOS 补丁
+│   ├── gen-copyright-source.py        生成软著源程序鉴别材料（60 页 PDF）
+│   ├── gen-copyright-manual.py        生成软著用户手册（PDF）
+│   ├── gen-screenshots.py             渲染界面截图
 │   └── gguf-selftest/                 GGUF 解析器离线自测
 ├── keystore/
 │   ├── gen-signing.sh                 调试签名材料一键生成
@@ -325,6 +329,25 @@ CamelHump/
 
 新增 [`docs/APP-STORE-GUIDE.md`](docs/APP-STORE-GUIDE.md)，覆盖资质判定、正式签名、
 `.app` 打包、素材规格、审核备注话术与时间线预估。
+
+**软著登记材料**
+
+新增 [`docs/copyright/`](docs/copyright/) 目录，材料已全部生成完毕：
+
+| 文件 | 内容 |
+| --- | --- |
+| `源代码.pdf` | 60 页鉴别材料（前 30 + 后 30，每页 50 行有效代码，页眉含软件全称与版本号） |
+| `用户手册.pdf` | 17 页，含封面、目录、10 个章节与 3 张界面截图 |
+| `软件主要功能描述.md` | 申请表「软件主要功能」栏填写正文（1154 字，符合 2026 新规 500–1300 字要求） |
+| `软著申请指引.md` | 申请流程、填表速查与上传前自检清单 |
+
+材料由 `tools/gen-copyright-source.py` 与 `tools/gen-copyright-manual.py` 生成，
+改代码后可重新产出。
+
+> ⚠️ **2026 年 3 月 15 日新规提示**：软著签章页要求本人手抄承诺
+> 「未使用 AI 开发编写代码、撰写文档或生成登记申请材料」，并建立失信惩戒机制。
+> 而华为应用市场上架中软著是**非必选资质**，具体取舍见
+> [`docs/copyright/软著申请指引.md`](docs/copyright/软著申请指引.md)。
 
 > **合规判定小结**：本应用为纯端侧离线推理，不向不特定公众提供生成式AI服务，
 > 依据《互联网信息服务深度合成管理规定》第二条，**无需算法备案与安全评估**。
