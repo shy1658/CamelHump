@@ -50,6 +50,25 @@
 > （因为应用不提供生成内容的文件导出功能，走官方「二选一」的第一条路径），
 > 不需要《人工智能生成合成内容标识说明函》。
 
+## 合规举证材料
+
+这两张图不是应用市场要求的「素材」，而是**审核备注栏的论证附件**，
+用于支撑「您的 APP 为单机 APP」的勾选。
+
+| 文件 | 尺寸 | 用途 |
+|---|---|---|
+| `arch-diagram.png` | 1920×1080 | 端侧推理架构图：四层调用栈 + 左侧「无网络层」阻断带 + 数据流向 + 底部四项指标 |
+| `network-proof.png` | 1600×2180 | 无网络请求举证：`module.json5` 全文（无 `requestPermissions`）+ 六项全仓核查结论表 + 结论段 |
+
+论证底稿见 [`../NETWORK-BEHAVIOR.md`](../NETWORK-BEHAVIOR.md)，
+材料包索引见 [`../AGC-SUBMISSION-PACK.md`](../AGC-SUBMISSION-PACK.md)。
+
+重新生成：`python3 tools/gen-arch-diagram.py`
+
+> 两张图均为暗色系，与本目录其他素材配色一致。
+> 已核查全部 PNG **不含任何元数据块**（无 `tEXt`/`iTXt`/`Software`/`Creation Time`），
+> 提交素材不携带隐式标识残留与本地环境信息。
+
 ## 其他素材
 
 - **隐私政策 URL**：<https://shy1658.github.io/CamelHump/privacy.html>（已上线，可直接填）

@@ -336,6 +336,33 @@ CamelHump/
 图标 216×216 与 1024×1024，截图 3 张 1080×1920（9:16）+ 1 张 1920×1080（16:9）。
 由 `tools/gen-store-assets.py` 产出，改版后可重新生成。
 
+**合规论证材料包**
+
+新增 [`docs/AGC-SUBMISSION-PACK.md`](docs/AGC-SUBMISSION-PACK.md) 作为材料总索引，
+把「单机 APP」这个结论拆成六条可验证的证明链：
+
+| 文档 | 回答的问题 |
+| --- | --- |
+| [`docs/NETWORK-BEHAVIOR.md`](docs/NETWORK-BEHAVIOR.md) | 你的应用联网吗？凭什么说是单机 APP？ |
+| [`docs/MODEL-PROVENANCE.md`](docs/MODEL-PROVENANCE.md) | 模型哪来的？备案号呢？ |
+| [`docs/AI-LABELING.md`](docs/AI-LABELING.md) | AI 生成的内容做了标识吗？ |
+| [`docs/AGC-ALGO-FILING-CONSULT.md`](docs/AGC-ALGO-FILING-CONSULT.md) | 向 AGC 确认「纯本地、用户自导入模型」能否替代算法备案号 |
+
+配套新增两张举证截图（由 `tools/gen-arch-diagram.py` 产出）：
+
+- [`docs/store-assets/arch-diagram.png`](docs/store-assets/arch-diagram.png) —
+  端侧推理架构图，四层调用栈 + 左侧「无网络层」阻断带；
+- [`docs/store-assets/network-proof.png`](docs/store-assets/network-proof.png) —
+  `module.json5` 全文（可见无 `requestPermissions`）+ 六项全仓核查结论表。
+
+三条独立的证据链共同支撑「单机 APP」这一结论，任一条被打破则结论失效：
+
+```
+权限层  module.json5 无 requestPermissions → 操作系统层面无法联网
+代码层  网络 API 0 命中 / NetworkKit 未引入 / 第三方依赖 0 个
+架构层  四层调用栈中没有网络层
+```
+
 **首次运行隐私政策授权弹窗**
 
 按官方要求补齐（原先缺失，是唯一的硬性阻塞项）：首次运行弹窗展示隐私政策，
@@ -367,9 +394,15 @@ CamelHump/
 > 而华为应用市场上架中软著是**非必选资质**，具体取舍见
 > [`docs/copyright/软著申请指引.md`](docs/copyright/软著申请指引.md)。
 
-> **合规判定小结**：本应用为纯端侧离线推理，不向不特定公众提供生成式AI服务，
-> 依据《互联网信息服务深度合成管理规定》第二条，**无需算法备案与安全评估**。
+> **合规判定小结**：本应用为纯端侧离线推理，**未向中华人民共和国境内公众提供**
+> 生成式人工智能服务——无服务器、无运营主体、无网络能力，
+> 故不适用《生成式人工智能服务管理暂行办法》第二条，
+> 亦不落入《互联网信息服务算法推荐管理规定》「具有舆论属性或者社会动员能力的
+> 互联网信息服务」的算法备案范围，**无需算法备案与安全评估**。
 > 上架的真正瓶颈在账号资质与审核往返，不在开发。
+>
+> 完整论证、边界条件与咨询话术见
+> [`docs/AGC-ALGO-FILING-CONSULT.md`](docs/AGC-ALGO-FILING-CONSULT.md)。
 
 ---
 
